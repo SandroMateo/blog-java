@@ -1,0 +1,16 @@
+#if($user.getPosts().isEmpty())
+  <a href="/user/$user.getId()/post/new">Create your first blog entry!</a>
+#else
+  #foreach($post in $user.getPosts())
+    <div class="row">
+      <div class="col-lg-10">
+        $post.getTitle()
+        $post.getContent()
+      </div>
+      <div class="col-lg-2">
+        $post.getDate()
+        $user.getUsername()
+      </div>
+    </div>
+  #end
+#end
