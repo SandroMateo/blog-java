@@ -8,9 +8,12 @@ public class User {
   private String password;
   private int id;
 
+  public static boolean loggedIn = false;
+
   public User(String username, String password) {
     this.username = username;
     this.password = password;
+    loggedIn = true;
   }
 
   public String getUsername() {
@@ -35,7 +38,7 @@ public class User {
   }
 
   public static User login(String username, String password) {
-    try(Connection  con = DB.sql2o.open()) {
+    try(Connection con = DB.sql2o.open()) {
       String sql = "SELECT * FROM users WHERE username = :username AND password = :password";
       User user =  con.createQuery(sql)
         .addParameter("username", username)
@@ -46,6 +49,16 @@ public class User {
       }
       return user;
     }
+  }
+
+  public static boolean isLoggedIn(String username, String password) {
+    try {
+      User.login(username, password);
+    } catch (RuntimeException exception) {
+      return false;
+    }
+    loggedIn = true;
+    return true;
   }
 
   public void save() {

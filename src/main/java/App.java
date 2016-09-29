@@ -14,9 +14,8 @@ public class App {
 
     get("/", (request, response) -> {
       Map<String, Object> model = new HashMap<>();
-      boolean createNew = false;
       model.put("loggedIn", true);
-      model.put("createNew", createNew);
+      model.put("createNew", false);
       model.put("users", User.all());
       model.put("template", "templates/index.vtl");
       return new ModelAndView(model, layout);
@@ -24,8 +23,7 @@ public class App {
 
     get("/user/new", (request, response) -> {
       Map<String, Object> model = new HashMap<>();
-      boolean createNew = true;
-      model.put("createNew", createNew);
+      model.put("createNew", true);
       model.put("users", User.all());
       model.put("template", "templates/index.vtl");
       return new ModelAndView(model, layout);
@@ -35,18 +33,14 @@ public class App {
       Map<String, Object> model = new HashMap<>();
       String username = request.queryParams("loginUsername");
       String password = request.queryParams("loginPassword");
-      boolean loggedIn = false;
-      for(int i = 0; i < User.all().size(); i++) {
-        if(username.equals(User.all().get(i).getUsername()) && password.equals(User.all().get(i).getPassword())) {
-          loggedIn = true;
-          model.put("user", User.all().get(i));
-          model.put("template", "templates/posts.vtl");
-        }
-      }
-      if (!loggedIn) {
+      if(User.isLoggedIn(username, password)) {
+        model.put("user", User.login(username, password));
+        model.put("loggedIn", User.loggedIn);
+        model.put("template", "templates/posts.vtl");
+      } else {
         model.put("users", User.all());
+        model.put("loggedIn", false);
         model.put("createNew", false);
-        model.put("loggedIn", loggedIn);
         model.put("template", "templates/index.vtl");
       }
       return new ModelAndView(model, layout);
@@ -58,40 +52,61 @@ public class App {
       String password = request.queryParams("password");
       User newUser = new User(username, password);
       newUser.save();
-      response.redirect("/posts");
-      return new ModelAndView(model, layout);
-    }, new VelocityTemplateEngine());
-
-    get("/posts", (request, response) -> {
-      Map<String, Object> model = new HashMap<>();
+      model.put("user", newUser);
+      model.put("loggedIn", User.loggedIn);
       model.put("template", "templates/posts.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
-    //
-    // get("/", (request, response) -> {
-    //   Map<String, Object> model = new HashMap<>();
-    //   model.put("template", "templates/index.vtl");
-    //   return new ModelAndView(model, layout);
-    // }, new VelocityTemplateEngine());
-    //
-    // get("/", (request, response) -> {
-    //   Map<String, Object> model = new HashMap<>();
-    //   model.put("template", "templates/index.vtl");
-    //   return new ModelAndView(model, layout);
-    // }, new VelocityTemplateEngine());
-    //
-    // get("/", (request, response) -> {
-    //   Map<String, Object> model = new HashMap<>();
-    //   model.put("template", "templates/index.vtl");
-    //   return new ModelAndView(model, layout);
-    // }, new VelocityTemplateEngine());
-    //
-    // get("/", (request, response) -> {
-    //   Map<String, Object> model = new HashMap<>();
-    //   model.put("template", "templates/index.vtl");
-    //   return new ModelAndView(model, layout);
-    // }, new VelocityTemplateEngine());
-    //
+
+    get("/user/:id/post/new", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      User user = User.find(Integer.parseInt(request.params("id")));
+      model.put("user",user);
+      model.put("loggedIn", User.loggedIn);
+      model.put("template", "templates/posts.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/users", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      model.put("users", User.all());
+      model.put("template", "templates/users.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/user/:id/posts", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      User user = User.find(Integer.parseInt(request.params("id")));
+      model.put("loggedIn", User.loggedIn);
+      model.put("user", user);
+      model.put("template", "templates/posts.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+
+    post("/user/:id/post/new", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      String title = request.queryParams("title");
+      String content = request.queryParams("content");
+      User theUser = User.find(Integer.parseInt(request.params(":id")));
+      Post thePost = new Post(title, content, theUser.getId());
+      thePost.save();
+      model.put("user",theUser);
+      model.put("post",thePost);
+      model.put("template", "templates/entry.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/user/:userId/post/:id", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      User user = User.find(Integer.parseInt(request.params("userId")));
+      Post post = Post.findPosts(Integer.parseInt(request.params(":id")));
+      model.put("user", user);
+      model.put("post", post);
+      model.put("template", "templates/entry.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
     // get("/", (request, response) -> {
     //   Map<String, Object> model = new HashMap<>();
     //   model.put("template", "templates/index.vtl");

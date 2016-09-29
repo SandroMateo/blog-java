@@ -1,0 +1,11 @@
+<h2>$user.getUsername()</h2>
+
+<h3>$post.getTitle()</h3>
+#foreach($tag in $post.getTags())
+  <h4><a href="/tag/$tag.getId()/posts">$tag.getType()</a></h4>
+#end
+<h6>$post.getDate()</h6>
+<h5>$post.getContent()</h5>
+
+<p><a href="/user/$user.getId()/posts">See All Posts From This User</a></p>
+<p><a href="/users">See All Users</a></p>

@@ -1,16 +1,26 @@
+<h1>Welcome, $user.getUsername()</h1>
 #if($user.getPosts().isEmpty())
-  <a href="/user/$user.getId()/post/new">Create your first blog entry!</a>
-#else
-  #foreach($post in $user.getPosts())
-    <div class="row">
-      <div class="col-lg-10">
-        $post.getTitle()
-        $post.getContent()
-      </div>
-      <div class="col-lg-2">
-        $post.getDate()
-        $user.getUsername()
-      </div>
-    </div>
-  #end
+  <h3>No posts written yet.</h3>
 #end
+<ul>
+  #foreach($post in $user.getPosts())
+    <li><a href="/user/$user.getId()/post/$post.getId()">$post.getTitle()</a></li>
+  #end
+</ul>
+
+
+#if($loggedIn)
+<p>
+  Pour out your soul
+</p>
+
+<form action="/user/$user.getId()/post/new" method="post">
+  <div class="form-group">
+    <input type="text" name="title" placeholder="Title" class="form-control">
+    <textarea name="content" rows="15" cols="100"></textarea>
+  </div>
+  <button type="submit" class="btn btn-info" name="button">Enter Post</button>
+</form>
+#end
+
+<p><a href="/users">See All Users</a></p>

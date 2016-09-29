@@ -22,8 +22,8 @@ public class Comment {
     return this.content;
   }
 
-  public Timestamp getDate() {
-    return this.date;
+  public String getDate() {
+    return DateFormat.getDateTimeInstance().format(this.date);
   }
 
   public int getId() {
@@ -87,7 +87,7 @@ public class Comment {
     } else {
       Comment newComment = (Comment) otherComment;
       return this.getContent().equals(newComment.getContent()) &&
-             this.getDate().getDay() == newComment.getDate().getDay() &&
+             this.getDate() == newComment.getDate() &&
              this.getParentId()  == newComment.getParentId() &&
              this.getId() == newComment.getId();
     }

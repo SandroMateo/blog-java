@@ -128,7 +128,7 @@ public class Post extends Comment{
     } else {
       Post newPost = (Post) otherPost;
       return this.getContent().equals(newPost.getContent()) &&
-      this.getDate().getDay() == newPost.getDate().getDay() &&
+      this.getDate() == newPost.getDate() &&
       this.getTitle().equals(newPost.getTitle()) &&
       this.getParentId()  == newPost.getParentId();
     }

@@ -1,0 +1,7 @@
+#if($users.isEmpty)
+  <h3>There Are No Bloggers!</h3>
+#else
+  #foreach($user in $users)
+    <p><a href="/user/$user.getId()/posts">$user.getUsername()</a></p>
+  #end
+#end

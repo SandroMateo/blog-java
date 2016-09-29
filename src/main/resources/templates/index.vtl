@@ -16,6 +16,8 @@
   </form>
 #end
 
+<a href="/users">Guest</a>
+
 #if($users.size() <= 0 || $createNew)
   <form action="/user/new" method="post">
     <div class="form-group">
@@ -24,7 +26,7 @@
     </div>
     <div class="form-group">
       <label for="password"></label>
-      <!-- <input type="password" name="password" id="password" placeholder="Password" required> -->
+      <input type="password" name="password" id="password" placeholder="Password" required>
     </div>
     <button type="submit" class="btn btn-default">Create Account</button>
   </form>

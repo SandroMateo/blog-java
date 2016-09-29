@@ -108,6 +108,15 @@ public class UserTest {
   }
 
   @Test
+  public void login_catchesExceptionIfLoginFails_false() {
+    firstUser.save();
+    try {
+      User myUser = User.login("sandro", "qwerty");
+    } catch(RuntimeException exception) { }
+    assertFalse(User.isLoggedIn("sandro", "qwerty"));
+  }
+
+  @Test
   public void getPosts_returnsAllPosts_true() {
     firstUser.save();
     Post post1 = new Post("test", "test content", firstUser.getId());
