@@ -35,6 +35,7 @@ public class App {
       String password = request.queryParams("loginPassword");
       if(User.isLoggedIn(username, password)) {
         model.put("user", User.login(username, password));
+        request.session().attribute("currentUser", User.login(username, password));
         model.put("loggedIn", User.loggedIn);
         model.put("template", "templates/posts.vtl");
       } else {
@@ -93,6 +94,8 @@ public class App {
       thePost.save();
       model.put("user",theUser);
       model.put("post",thePost);
+      model.put("loggedIn", User.loggedIn);
+      model.put("tags", Tag.all());
       model.put("template", "templates/entry.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
@@ -103,6 +106,18 @@ public class App {
       Post post = Post.findPosts(Integer.parseInt(request.params(":id")));
       model.put("user", user);
       model.put("post", post);
+      model.put("loggedIn", User.loggedIn);
+      model.put("tags", Tag.all());
+      model.put("template", "templates/entry.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/tags/new", (request, response) -> {
+      Map<String, Object> model = new HashMap<>();
+      String type = request.queryParams("type");
+      Tag tag = new Tag(type);
+      User currentUser = request.session().attribute("currentUser");
+      model.put("user", currentUser);
       model.put("template", "templates/entry.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());

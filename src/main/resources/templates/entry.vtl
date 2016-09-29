@@ -7,5 +7,24 @@
 <h6>$post.getDate()</h6>
 <h5>$post.getContent()</h5>
 
+#if($loggedIn)
+  Add Tags:
+  <div class="form-group">
+    <form action="tags/new" method="post">
+      <div class="form-group">
+        #foreach($tag in $tags)
+          <label for="tags">
+          <input type="checkbox" name="tags" id="tags" value=$tag.getId()>
+            $tag.getType()
+          </label>
+        #end
+      </div>
+      <label for="type">New Tag</label>
+      <input type="text" name="type">
+      <button type="submit" class="btn btn-success">Add!</button>
+    </form>
+  </div>
+#end
+
 <p><a href="/user/$user.getId()/posts">See All Posts From This User</a></p>
 <p><a href="/users">See All Users</a></p>

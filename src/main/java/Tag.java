@@ -29,14 +29,14 @@ public class Tag{
     }
   }
 
-  public List<Tag> all() {
+  public static List<Tag> all() {
     try(Connection con = DB.sql2o.open()) {
       String sql = "SELECT * FROM tags";
       return con.createQuery(sql).executeAndFetch(Tag.class);
     }
   }
 
-  public Tag find(int id) {
+  public static Tag find(int id) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "SELECT * FROM tags WHERE id = :id";
       return con.createQuery(sql)
