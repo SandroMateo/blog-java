@@ -96,6 +96,18 @@ public class UserTest {
   }
 
   @Test
+  public void login_successReturnsUser_true() {
+    firstUser.save();
+    assertEquals(User.login("sandromateo", "qwerty"), firstUser);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void login_throwsExceptionIfLoginFails() {
+    firstUser.save();
+    User.login("sandro", "qwerty");
+  }
+
+  @Test
   public void getPosts_returnsAllPosts_true() {
     firstUser.save();
     Post post1 = new Post("test", "test content", firstUser.getId());

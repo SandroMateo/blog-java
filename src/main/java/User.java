@@ -34,19 +34,19 @@ public class User {
     }
   }
 
-  // public static User login(String username, String password) {
-  //   if(user == null) {
-  //     throw new
-  //   }
-  //   try(Connection  con = DB.sql2o.open()) {
-  //     String sql = "SELECT * FROM users WHERE username = :username, password = :password";
-  //     User user =  con.createQuery(sql)
-  //       .addParameter("username", username)
-  //       .addParameter("password", password)
-  //       .executeAndFetchFirst(User.class);
-  //     return user;
-  //   }
-  // }
+  public static User login(String username, String password) {
+    try(Connection  con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM users WHERE username = :username AND password = :password";
+      User user =  con.createQuery(sql)
+        .addParameter("username", username)
+        .addParameter("password", password)
+        .executeAndFetchFirst(User.class);
+      if(user == null) {
+        throw new RuntimeException("Invalid username and/or password");
+      }
+      return user;
+    }
+  }
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
